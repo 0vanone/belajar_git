@@ -1,1 +1,544 @@
-"hallo kamu sedang belajar git nih hallo semua" 
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusAI - Modern AI Assistant</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Inter & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8); }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex transition-colors duration-300">
+
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- SIDEBAR: Riwayat Chat & Menu -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-30 w-72 bg-slate-900 dark:bg-slate-900 text-slate-300 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out border-r border-slate-800 shadow-xl md:shadow-none">
+        
+        <!-- Top Sidebar: New Chat Button & Chat List -->
+        <div class="flex flex-col h-full overflow-hidden">
+            <!-- Header Sidebar -->
+            <div class="p-4 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-md shadow-emerald-500/20">
+                        <i class="fa-solid fa-atom text-sm"></i>
+                    </div>
+                    <span class="font-bold text-lg text-white tracking-wide">NexusAI</span>
+                </div>
+                <!-- Close Mobile Sidebar -->
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- New Chat Button -->
+            <div class="p-3">
+                <button onclick="createNewChat()" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.98]">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>Chat Baru</span>
+                </button>
+            </div>
+
+            <!-- History List Header -->
+            <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Riwayat Percakapan
+            </div>
+
+            <!-- Chat History Items Container -->
+            <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 space-y-1 py-1">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+
+        <!-- Bottom Sidebar: User Profile & Dark Mode Toggle -->
+        <div class="p-3 border-t border-slate-800 space-y-2">
+            <!-- Theme Toggle Button -->
+            <button onclick="toggleTheme()" class="w-full flex items-center justify-between py-2 px-3 hover:bg-slate-800/80 rounded-xl transition-colors text-sm text-slate-300">
+                <div class="flex items-center space-x-3">
+                    <i id="themeIcon" class="fa-solid fa-moon w-5 text-center"></i>
+                    <span id="themeText">Mode Gelap</span>
+                </div>
+                <div class="w-8 h-4 bg-slate-700 rounded-full relative p-0.5 transition-colors" id="themeSwitchTrack">
+                    <div id="themeSwitchThumb" class="w-3 h-3 bg-white rounded-full transition-transform transform translate-x-0"></div>
+                </div>
+            </button>
+
+            <!-- User Profile Info -->
+            <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-800/40 border border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                        EV
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs font-medium text-white">Evan Developer</span>
+                        <span class="text-[10px] text-emerald-400">Pro Plan (Active)</span>
+                    </div>
+                </div>
+                <button onclick="clearAllData()" title="Hapus Semua Riwayat" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg transition-colors">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CHAT AREA (Right Panel) -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-950">
+        
+        <!-- Top Navbar Chat Area -->
+        <header class="h-14 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+            <div class="flex items-center space-x-3">
+                <!-- Hamburger menu mobile -->
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <span id="currentChatTitle" class="font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-xs">Percakapan Baru</span>
+                    <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">Nexus-4 Turbo</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="exportChat()" title="Ekspor Percakapan" class="p-2 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors">
+                    <i class="fa-solid fa-download text-sm"></i>
+                </button>
+                <div class="h-4 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+                <div class="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 px-2 py-1 bg-slate-100 dark:bg-slate-900 rounded-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="font-medium">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Message Scrollable Container -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+            <!-- Welcome State (Displayed if no messages) -->
+            <div id="welcomeState" class="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-6 py-12">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white text-3xl shadow-xl shadow-emerald-500/20">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="space-y-2">
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Ada yang bisa saya bantu hari ini, Evan?</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Tanyakan apa saja, mulai dari ngoding backend FastAPI, merancang sistem arsitektur, hingga menerjemahkan teks.</p>
+                </div>
+
+                <!-- Quick Prompt Suggestions -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full text-left pt-4">
+                    <button onclick="sendPrompt('Buatkan contoh kode FastAPI sederhana untuk endpoint API user')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
+                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">🐍 Buat Kode FastAPI</div>
+                        <div class="text-[11px] text-slate-400 truncate">Endpoint user dengan validasi Pydantic</div>
+                    </button>
+                    <button onclick="sendPrompt('Jelaskan perbedaan antara SQL dan NoSQL secara singkat')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
+                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">💡 SQL vs NoSQL</div>
+                        <div class="text-[11px] text-slate-400 truncate">Pahami kapan waktu terbaik menggunakannya</div>
+                    </button>
+                    <button onclick="sendPrompt('Berikan tips untuk mengoptimalkan performa database PostgreSQL')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
+                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">🚀 Optimasi Database</div>
+                        <div class="text-[11px] text-slate-400 truncate">Tips performa kueri PostgreSQL</div>
+                    </button>
+                    <button onclick="sendPrompt('Buatkan ide project aplikasi AI yang keren untuk portofolio')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
+                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">✨ Ide Portofolio AI</div>
+                        <div class="text-[11px] text-slate-400 truncate">Rekomendasi project web interaktif</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Message Feed -->
+            <div id="messageFeed" class="space-y-6 max-w-3xl mx-auto w-full hidden">
+                <!-- Dynamic messages appended here -->
+            </div>
+        </div>
+
+        <!-- Bottom Input Bar -->
+        <div class="p-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
+            <div class="max-w-3xl mx-auto">
+                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="relative flex items-center">
+                    <textarea 
+                        id="userInput" 
+                        rows="1" 
+                        placeholder="Kirim pesan ke NexusAI..." 
+                        class="w-full pl-4 pr-12 py-3.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm resize-none max-h-32 text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    
+                    <button 
+                        type="submit" 
+                        id="sendButton"
+                        class="absolute right-2.5 bottom-2.5 w-9 h-9 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <i class="fa-solid fa-arrow-up text-sm"></i>
+                    </button>
+                </form>
+                <div class="text-center mt-2">
+                    <span class="text-[11px] text-slate-400">NexusAI dapat membuat kesalahan. Periksa kembali informasi penting.</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 flex items-center space-x-3 text-sm">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">Pesan berhasil disalin!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Management
+        let chats = JSON.parse(localStorage.getItem('nexus_chats')) || [];
+        let currentChatId = localStorage.getItem('nexus_current_chat_id') || null;
+
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            if (chats.length === 0) {
+                createNewChat();
+            } else {
+                if (!currentChatId || !chats.find(c => c.id === currentChatId)) {
+                    currentChatId = chats[0].id;
+                }
+                loadChat(currentChatId);
+            }
+            renderChatHistory();
+        });
+
+        // Theme Toggle Functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('nexus_theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                updateThemeUI(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeUI(false);
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('nexus_theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        }
+
+        function updateThemeUI(isDark) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            const track = document.getElementById('themeSwitchTrack');
+            const thumb = document.getElementById('themeSwitchThumb');
+
+            if (isDark) {
+                icon.className = 'fa-solid fa-sun w-5 text-center text-amber-400';
+                text.textContent = 'Mode Terang';
+                track.classList.remove('bg-slate-700');
+                track.classList.add('bg-emerald-600');
+                thumb.style.transform = 'translateX(1rem)';
+            } else {
+                icon.className = 'fa-solid fa-moon w-5 text-center text-slate-400';
+                text.textContent = 'Mode Gelap';
+                track.classList.remove('bg-emerald-600');
+                track.classList.add('bg-slate-700');
+                thumb.style.transform = 'translateX(0)';
+            }
+        }
+
+        // Sidebar Responsive Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Auto Resize Textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                document.getElementById('chatForm').requestSubmit();
+            }
+        }
+
+        // Chat Operations
+        function createNewChat() {
+            const newChat = {
+                id: 'chat_' + Date.now(),
+                title: 'Percakapan Baru',
+                messages: []
+            };
+            chats.unshift(newChat);
+            currentChatId = newChat.id;
+            saveChats();
+            loadChat(currentChatId);
+            renderChatHistory();
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        function loadChat(chatId) {
+            currentChatId = chatId;
+            localStorage.setItem('nexus_current_chat_id', chatId);
+            const chat = chats.find(c => c.id === chatId);
+            if (!chat) return;
+
+            document.getElementById('currentChatTitle').textContent = chat.title;
+            renderMessages(chat.messages);
+            renderChatHistory();
+        }
+
+        function saveChats() {
+            localStorage.setItem('nexus_chats', JSON.stringify(chats));
+        }
+
+        function renderChatHistory() {
+            const listContainer = document.getElementById('chatHistoryList');
+            listContainer.innerHTML = '';
+
+            if (chats.length === 0) {
+                listContainer.innerHTML = `<div class="p-3 text-xs text-slate-500 text-center">Belum ada riwayat chat.</div>`;
+                return;
+            }
+
+            chats.forEach(chat => {
+                const isActive = chat.id === currentChatId;
+                const item = document.createElement('div');
+                item.className = `group flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-all ${isActive ? 'bg-slate-800 text-white font-medium shadow-sm' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`;
+                item.onclick = () => loadChat(chat.id);
+                
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2.5 overflow-hidden flex-1 mr-2">
+                        <i class="fa-regular fa-message text-xs ${isActive ? 'text-emerald-400' : 'text-slate-500'}"></i>
+                        <span class="truncate text-xs">${escapeHTML(chat.title)}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 p-1 rounded transition-opacity">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function deleteChat(chatId) {
+            chats = chats.filter(c => c.id !== chatId);
+            saveChats();
+            if (chats.length === 0) {
+                createNewChat();
+            } else if (currentChatId === chatId) {
+                loadChat(chats[0].id);
+            } else {
+                renderChatHistory();
+            }
+            showToast('Riwayat chat dihapus', 'fa-solid fa-trash text-rose-400');
+        }
+
+        function clearAllData() {
+            if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat chat?')) {
+                chats = [];
+                localStorage.removeItem('nexus_chats');
+                localStorage.removeItem('nexus_current_chat_id');
+                createNewChat();
+                showToast('Semua riwayat berhasil dibersihkan', 'fa-solid fa-triangle-exclamation text-amber-400');
+            }
+        }
+
+        // Render Messages in Feed
+        function renderMessages(messages) {
+            const welcomeState = document.getElementById('welcomeState');
+            const messageFeed = document.getElementById('messageFeed');
+
+            if (messages.length === 0) {
+                welcomeState.classList.remove('hidden');
+                messageFeed.classList.add('hidden');
+                messageFeed.innerHTML = '';
+                return;
+            }
+
+            welcomeState.classList.add('hidden');
+            messageFeed.classList.remove('hidden');
+            messageFeed.innerHTML = '';
+
+            messages.forEach((msg, index) => {
+                const isUser = msg.role === 'user';
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `flex items-start space-x-3 sm:space-x-4 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+                
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-semibold ${isUser ? 'bg-indigo-600 shadow-md shadow-indigo-600/20' : 'bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-md shadow-emerald-500/20'}">
+                        ${isUser ? 'EV' : '<i class="fa-solid fa-robot"></i>'}
+                    </div>
+                    <div class="flex-1 space-y-1 overflow-hidden ${isUser ? 'text-right' : 'text-left'}">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">${isUser ? 'Anda' : 'NexusAI'}</div>
+                        <div class="inline-block p-4 rounded-2xl text-sm leading-relaxed max-w-full text-left ${isUser ? 'bg-indigo-600 text-white rounded-tr-none shadow-sm' : 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'}">
+                            <div class="whitespace-pre-wrap break-words">${formatMessageText(msg.content)}</div>
+                        </div>
+                    </div>
+                `;
+                messageFeed.appendChild(msgDiv);
+            });
+
+            scrollToBottom();
+        }
+
+        // Format code snippets or bold text in message
+        function formatMessageText(text) {
+            // Basic escaping and formatting simulation
+            return escapeHTML(text);
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('chatContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Handle Form Submit & Simulated AI Response with Typing Effect
+        function sendPrompt(text) {
+            document.getElementById('userInput').value = text;
+            document.getElementById('chatForm').requestSubmit();
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('userInput');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            input.value = '';
+            input.style.height = 'auto';
+
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+
+            // Update title if first message
+            if (chat.messages.length === 0) {
+                chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
+            }
+
+            // Push user message
+            chat.messages.push({ role: 'user', content: prompt });
+            saveChats();
+            renderMessages(chat.messages);
+            renderChatHistory();
+
+            // Simulate AI Thinking / Response
+            const sendBtn = document.getElementById('sendButton');
+            sendBtn.disabled = true;
+
+            // Generate smart automated response based on prompt keyword
+            const aiResponseText = generateSimulatedAIResponse(prompt);
+
+            // Create placeholder for AI message
+            chat.messages.push({ role: 'assistant', content: '' });
+            saveChats();
+            renderMessages(chat.messages);
+
+            // Typing Effect Animation
+            const messageFeed = document.getElementById('messageFeed');
+            const lastMessageBubble = messageFeed.lastElementChild.querySelector('.whitespace-pre-wrap');
+            
+            let charIndex = 0;
+            const typingInterval = setInterval(() => {
+                if (charIndex < aiResponseText.length) {
+                    lastMessageBubble.textContent += aiResponseText.charAt(charIndex);
+                    charIndex++;
+                    scrollToBottom();
+                } else {
+                    clearInterval(typingInterval);
+                    chat.messages[chat.messages.length - 1].content = aiResponseText;
+                    saveChats();
+                    sendBtn.disabled = false;
+                }
+            }, 12);
+        }
+
+        // Simulated AI Generator
+        function generateSimulatedAIResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('fastapi') || q.includes('python')) {
+                return `Berikut adalah contoh implementasi endpoint FastAPI yang bersih dan aman dengan Pydantic validasi:\n\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass UserCreate(BaseModel):\n    username: str\n    email: str\n\n@app.post("/users/")\ndef create_user(user: UserCreate):\n    return {"message": f"User {user.username} berhasil dibuat!", "email": user.email}\n\`\`\`\n\nKode ini siap dijalankan dengan \`uvicorn main:app --reload\`. Ada bagian spesifik yang ingin kamu kembangkan?`;
+            } else if (q.includes('sql') || q.includes('nosql')) {
+                return `Secara singkat:\n1. **SQL (Relational - misal: PostgreSQL, MySQL):** Menggunakan tabel terstruktur dengan skema ketat. Cocok untuk data relasional kompleks seperti transaksi keuangan.\n2. **NoSQL (Non-relational - misal: MongoDB, Redis):** Menggunakan format dokumen fleksibel (JSON). Cocok untuk data berkecepatan tinggi atau skema yang sering berubah.\n\nKira-kira project kamu saat ini lebih cocok pakai database yang mana, Evan?`;
+            } else if (q.includes('database') || q.includes('postgres')) {
+                return `Tips utama optimasi PostgreSQL:\n- **Indexing:** Buat indeks pada kolom yang sering digunakan di klausa \`WHERE\` atau \`JOIN\`.\n- **Connection Pooling:** Gunakan PgBouncer untuk mengelola koneksi bersama agar server tidak kelebihan beban.\n- **Query Analysis:** Gunakan perintah \`EXPLAIN ANALYZE\` untuk mendeteksi kueri yang lambat.`;
+            } else {
+                return `Pertanyaan yang menarik! Sebagai asisten AI modern, saya siap membantu kamu merancang arsitektur sistem, menulis kode backend/frontend, hingga debugging program.\n\nKamu menanyakan tentang: "${query}". Apakah ada detail teknis tambahan yang ingin kita diskusikan lebih mendalam?`;
+            }
+        }
+
+        // Export Chat function
+        function exportChat() {
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat || chat.messages.length === 0) {
+                showToast('Tidak ada pesan untuk diekspor', 'fa-solid fa-triangle-exclamation text-amber-400');
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(chat, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('Percakapan berhasil diekspor!', 'fa-solid fa-circle-check text-emerald-400');
+        }
+
+        // Toast Notification helper
+        function showToast(message, iconClass = 'fa-solid fa-circle-check text-emerald-400') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = message;
+            toastIcon.className = iconClass;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
