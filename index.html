@@ -29,7 +29,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 9999px; }
@@ -46,12 +45,9 @@
     <!-- Mobile Overlay -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- SIDEBAR: Riwayat Chat & Menu -->
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-30 w-72 bg-slate-900 dark:bg-slate-900 text-slate-300 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out border-r border-slate-800 shadow-xl md:shadow-none">
-        
-        <!-- Top Sidebar: New Chat Button & Chat List -->
         <div class="flex flex-col h-full overflow-hidden">
-            <!-- Header Sidebar -->
             <div class="p-4 flex items-center justify-between border-b border-slate-800">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-md shadow-emerald-500/20">
@@ -59,13 +55,11 @@
                     </div>
                     <span class="font-bold text-lg text-white tracking-wide">NexusAI</span>
                 </div>
-                <!-- Close Mobile Sidebar -->
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1 rounded-lg">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
 
-            <!-- New Chat Button -->
             <div class="p-3">
                 <button onclick="createNewChat()" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.98]">
                     <i class="fa-solid fa-plus text-sm"></i>
@@ -73,20 +67,14 @@
                 </button>
             </div>
 
-            <!-- History List Header -->
             <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Riwayat Percakapan
             </div>
 
-            <!-- Chat History Items Container -->
-            <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 space-y-1 py-1">
-                <!-- Dynamically populated via JS -->
-            </div>
+            <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 space-y-1 py-1"></div>
         </div>
 
-        <!-- Bottom Sidebar: User Profile & Dark Mode Toggle -->
         <div class="p-3 border-t border-slate-800 space-y-2">
-            <!-- Theme Toggle Button -->
             <button onclick="toggleTheme()" class="w-full flex items-center justify-between py-2 px-3 hover:bg-slate-800/80 rounded-xl transition-colors text-sm text-slate-300">
                 <div class="flex items-center space-x-3">
                     <i id="themeIcon" class="fa-solid fa-moon w-5 text-center"></i>
@@ -97,7 +85,6 @@
                 </div>
             </button>
 
-            <!-- User Profile Info -->
             <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-800/40 border border-slate-800">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
@@ -115,19 +102,16 @@
         </div>
     </aside>
 
-    <!-- MAIN CHAT AREA (Right Panel) -->
+    <!-- MAIN CHAT AREA -->
     <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-950">
-        
-        <!-- Top Navbar Chat Area -->
         <header class="h-14 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
             <div class="flex items-center space-x-3">
-                <!-- Hamburger menu mobile -->
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
                 <div class="flex items-center space-x-2">
                     <span id="currentChatTitle" class="font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-xs">Percakapan Baru</span>
-                    <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">Nexus-4 Turbo</span>
+                    <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">Gemini-1.5 Flash</span>
                 </div>
             </div>
 
@@ -143,46 +127,20 @@
             </div>
         </header>
 
-        <!-- Message Scrollable Container -->
         <div id="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-            <!-- Welcome State (Displayed if no messages) -->
             <div id="welcomeState" class="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-6 py-12">
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white text-3xl shadow-xl shadow-emerald-500/20">
                     <i class="fa-solid fa-robot"></i>
                 </div>
                 <div class="space-y-2">
                     <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Ada yang bisa saya bantu hari ini, Evan?</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Tanyakan apa saja, mulai dari ngoding backend FastAPI, merancang sistem arsitektur, hingga menerjemahkan teks.</p>
-                </div>
-
-                <!-- Quick Prompt Suggestions -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full text-left pt-4">
-                    <button onclick="sendPrompt('Buatkan contoh kode FastAPI sederhana untuk endpoint API user')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
-                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">🐍 Buat Kode FastAPI</div>
-                        <div class="text-[11px] text-slate-400 truncate">Endpoint user dengan validasi Pydantic</div>
-                    </button>
-                    <button onclick="sendPrompt('Jelaskan perbedaan antara SQL dan NoSQL secara singkat')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
-                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">💡 SQL vs NoSQL</div>
-                        <div class="text-[11px] text-slate-400 truncate">Pahami kapan waktu terbaik menggunakannya</div>
-                    </button>
-                    <button onclick="sendPrompt('Berikan tips untuk mengoptimalkan performa database PostgreSQL')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
-                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">🚀 Optimasi Database</div>
-                        <div class="text-[11px] text-slate-400 truncate">Tips performa kueri PostgreSQL</div>
-                    </button>
-                    <button onclick="sendPrompt('Buatkan ide project aplikasi AI yang keren untuk portofolio')" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all group">
-                        <div class="font-medium text-xs text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">✨ Ide Portofolio AI</div>
-                        <div class="text-[11px] text-slate-400 truncate">Rekomendasi project web interaktif</div>
-                    </button>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Tanyakan apa saja langsung ke Gemini AI.</p>
                 </div>
             </div>
 
-            <!-- Chat Message Feed -->
-            <div id="messageFeed" class="space-y-6 max-w-3xl mx-auto w-full hidden">
-                <!-- Dynamic messages appended here -->
-            </div>
+            <div id="messageFeed" class="space-y-6 max-w-3xl mx-auto w-full hidden"></div>
         </div>
 
-        <!-- Bottom Input Bar -->
         <div class="p-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
             <div class="max-w-3xl mx-auto">
                 <form id="chatForm" onsubmit="handleChatSubmit(event)" class="relative flex items-center">
@@ -204,25 +162,24 @@
                     </button>
                 </form>
                 <div class="text-center mt-2">
-                    <span class="text-[11px] text-slate-400">NexusAI dapat membuat kesalahan. Periksa kembali informasi penting.</span>
+                    <span class="text-[11px] text-slate-400">NexusAI terhubung langsung dengan Google Gemini API.</span>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Custom Notification Toast -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 flex items-center space-x-3 text-sm">
         <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="toastMessage">Pesan berhasil disalin!</span>
     </div>
 
+    <script src="config.js"></script>
+    
     <!-- JavaScript Logic -->
     <script>
-        // State Management
         let chats = JSON.parse(localStorage.getItem('nexus_chats')) || [];
         let currentChatId = localStorage.getItem('nexus_current_chat_id') || null;
 
-        // Initialize App on Load
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
             if (chats.length === 0) {
@@ -236,7 +193,6 @@
             renderChatHistory();
         });
 
-        // Theme Toggle Functionality
         function initTheme() {
             const savedTheme = localStorage.getItem('nexus_theme') || 'light';
             if (savedTheme === 'dark') {
@@ -275,7 +231,6 @@
             }
         }
 
-        // Sidebar Responsive Toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -283,7 +238,6 @@
             overlay.classList.toggle('hidden');
         }
 
-        // Auto Resize Textarea
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
@@ -296,7 +250,6 @@
             }
         }
 
-        // Chat Operations
         function createNewChat() {
             const newChat = {
                 id: 'chat_' + Date.now(),
@@ -379,7 +332,6 @@
             }
         }
 
-        // Render Messages in Feed
         function renderMessages(messages) {
             const welcomeState = document.getElementById('welcomeState');
             const messageFeed = document.getElementById('messageFeed');
@@ -395,7 +347,7 @@
             messageFeed.classList.remove('hidden');
             messageFeed.innerHTML = '';
 
-            messages.forEach((msg, index) => {
+            messages.forEach((msg) => {
                 const isUser = msg.role === 'user';
                 const msgDiv = document.createElement('div');
                 msgDiv.className = `flex items-start space-x-3 sm:space-x-4 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
@@ -407,7 +359,7 @@
                     <div class="flex-1 space-y-1 overflow-hidden ${isUser ? 'text-right' : 'text-left'}">
                         <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">${isUser ? 'Anda' : 'NexusAI'}</div>
                         <div class="inline-block p-4 rounded-2xl text-sm leading-relaxed max-w-full text-left ${isUser ? 'bg-indigo-600 text-white rounded-tr-none shadow-sm' : 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'}">
-                            <div class="whitespace-pre-wrap break-words">${formatMessageText(msg.content)}</div>
+                            <div class="whitespace-pre-wrap break-words">${escapeHTML(msg.content)}</div>
                         </div>
                     </div>
                 `;
@@ -417,13 +369,8 @@
             scrollToBottom();
         }
 
-        // Format code snippets or bold text in message
-        function formatMessageText(text) {
-            // Basic escaping and formatting simulation
-            return escapeHTML(text);
-        }
-
         function escapeHTML(str) {
+            if (!str) return '';
             return str.replace(/[&<>'"]/g, 
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
@@ -434,13 +381,13 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Handle Form Submit & Simulated AI Response with Typing Effect
         function sendPrompt(text) {
             document.getElementById('userInput').value = text;
             document.getElementById('chatForm').requestSubmit();
         }
 
-        async function handleChatSubmit(event) {
+        // Integrasi Gemini API Menggunakan Token AQ Kamu
+              async function handleChatSubmit(event) {
             event.preventDefault();
             const input = document.getElementById('userInput');
             const prompt = input.value.trim();
@@ -452,63 +399,64 @@
             const chat = chats.find(c => c.id === currentChatId);
             if (!chat) return;
 
-            // Update title if first message
             if (chat.messages.length === 0) {
                 chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
             }
 
-            // Push user message
             chat.messages.push({ role: 'user', content: prompt });
             saveChats();
             renderMessages(chat.messages);
             renderChatHistory();
 
-            // Simulate AI Thinking / Response
             const sendBtn = document.getElementById('sendButton');
             sendBtn.disabled = true;
 
-            // Generate smart automated response based on prompt keyword
-            const aiResponseText = generateSimulatedAIResponse(prompt);
-
-            // Create placeholder for AI message
-            chat.messages.push({ role: 'assistant', content: '' });
+            chat.messages.push({ role: 'assistant', content: 'Sedang berpikir...' });
             saveChats();
             renderMessages(chat.messages);
 
-            // Typing Effect Animation
-            const messageFeed = document.getElementById('messageFeed');
-            const lastMessageBubble = messageFeed.lastElementChild.querySelector('.whitespace-pre-wrap');
-            
-            let charIndex = 0;
-            const typingInterval = setInterval(() => {
-                if (charIndex < aiResponseText.length) {
-                    lastMessageBubble.textContent += aiResponseText.charAt(charIndex);
-                    charIndex++;
-                    scrollToBottom();
-                } else {
-                    clearInterval(typingInterval);
-                    chat.messages[chat.messages.length - 1].content = aiResponseText;
-                    saveChats();
-                    sendBtn.disabled = false;
-                }
-            }, 12);
-        }
+            try {
+                // ==========================================
+                // MASUKKAN API KEY GROQ KAMU DI SINI
+                // ==========================================
+                const apiKey = GROQ_API_KEY; 
+                
+                // Kita pakai format OpenAI yang didukung penuh oleh Groq
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "openai/gpt-oss-120b", // Model Groq
+                        messages: chat.messages.filter(m => m.content !== 'Sedang berpikir...') // Ambil riwayat chat
+                    })
+                });
 
-        // Simulated AI Generator
-        function generateSimulatedAIResponse(query) {
-            const q = query.toLowerCase();
-            if (q.includes('fastapi') || q.includes('python')) {
-                return `Berikut adalah contoh implementasi endpoint FastAPI yang bersih dan aman dengan Pydantic validasi:\n\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass UserCreate(BaseModel):\n    username: str\n    email: str\n\n@app.post("/users/")\ndef create_user(user: UserCreate):\n    return {"message": f"User {user.username} berhasil dibuat!", "email": user.email}\n\`\`\`\n\nKode ini siap dijalankan dengan \`uvicorn main:app --reload\`. Ada bagian spesifik yang ingin kamu kembangkan?`;
-            } else if (q.includes('sql') || q.includes('nosql')) {
-                return `Secara singkat:\n1. **SQL (Relational - misal: PostgreSQL, MySQL):** Menggunakan tabel terstruktur dengan skema ketat. Cocok untuk data relasional kompleks seperti transaksi keuangan.\n2. **NoSQL (Non-relational - misal: MongoDB, Redis):** Menggunakan format dokumen fleksibel (JSON). Cocok untuk data berkecepatan tinggi atau skema yang sering berubah.\n\nKira-kira project kamu saat ini lebih cocok pakai database yang mana, Evan?`;
-            } else if (q.includes('database') || q.includes('postgres')) {
-                return `Tips utama optimasi PostgreSQL:\n- **Indexing:** Buat indeks pada kolom yang sering digunakan di klausa \`WHERE\` atau \`JOIN\`.\n- **Connection Pooling:** Gunakan PgBouncer untuk mengelola koneksi bersama agar server tidak kelebihan beban.\n- **Query Analysis:** Gunakan perintah \`EXPLAIN ANALYZE\` untuk mendeteksi kueri yang lambat.`;
-            } else {
-                return `Pertanyaan yang menarik! Sebagai asisten AI modern, saya siap membantu kamu merancang arsitektur sistem, menulis kode backend/frontend, hingga debugging program.\n\nKamu menanyakan tentang: "${query}". Apakah ada detail teknis tambahan yang ingin kita diskusikan lebih mendalam?`;
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0].message.content) {
+                    const aiResponseText = data.choices[0].message.content;
+                    chat.messages[chat.messages.length - 1].content = aiResponseText;
+                } else {
+                    console.error("Error dari Groq:", data);
+                    chat.messages[chat.messages.length - 1].content = "Gagal memproses respons. Cek Console (F12) untuk detail.";
+                }
+
+                saveChats();
+                renderMessages(chat.messages);
+
+            } catch (error) {
+                chat.messages[chat.messages.length - 1].content = "Gagal terhubung ke server AI. Periksa koneksi internet.";
+                saveChats();
+                renderMessages(chat.messages);
+                console.error(error);
+            } finally {
+                sendBtn.disabled = false;
             }
         }
 
-        // Export Chat function
         function exportChat() {
             const chat = chats.find(c => c.id === currentChatId);
             if (!chat || chat.messages.length === 0) {
@@ -525,7 +473,6 @@
             showToast('Percakapan berhasil diekspor!', 'fa-solid fa-circle-check text-emerald-400');
         }
 
-        // Toast Notification helper
         function showToast(message, iconClass = 'fa-solid fa-circle-check text-emerald-400') {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMessage');
