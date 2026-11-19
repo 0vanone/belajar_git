@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusAI - Vice City Edition</title>
-    <!-- Tailwind CSS CDN -->
+    <title>NexusAI | Vice City Edition</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,183 +13,209 @@
                 extend: {
                     colors: {
                         gta: {
-                            pink: '#FF007F',
-                            cyan: '#00F0FF',
-                            purple: '#8A2BE2',
-                            sunset: '#FF8C00',
-                            dark: '#0a0a0a',
+                            pink: '#FF2A6D',
+                            cyan: '#05D9E8',
+                            purple: '#7700FF',
+                            dark: '#0D0221',
                         }
                     },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <!-- Font Poppins & FontAwesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 0, 127, 0.5); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.8); }
+        body { font-family: 'Outfit', sans-serif; }
         
-        /* Efek Glow Animasi */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255, 0, 127, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
+        /* BACKGROUND GTA (Ringan tanpa animasi berat) */
+        .gta-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(180deg, #0D0221 0%, #2E0A4E 40%, #FF2A6D 80%, #FF8C00 100%);
+            overflow: hidden;
         }
-        .animate-glow { animation: pulse-glow 3s infinite; }
+        .stars {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60%;
+            background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 90px 40px, #fff, rgba(0,0,0,0));
+            background-size: 300px 200px; opacity: 0.5;
+        }
+        .sun {
+            position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%);
+            width: 250px; height: 250px; background: linear-gradient(180deg, #FFEA00 0%, #FF2A6D 100%);
+            border-radius: 50%; box-shadow: 0 0 40px #FF2A6D;
+        }
+        .sun::after {
+            content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 50%;
+            background: repeating-linear-gradient(to bottom, transparent 0%, transparent 15%, rgba(13, 2, 33, 0.9) 15%, rgba(13, 2, 33, 0.9) 20%);
+            border-radius: 0 0 125px 125px;
+        }
+        .palm-trees {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 35%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><path fill="%230D0221" d="M100,300 L120,150 C130,100 150,80 180,70 C150,90 130,120 120,150 Z M120,150 C110,110 90,70 50,50 C80,80 100,120 110,150 Z M120,150 C140,110 170,70 210,60 C180,90 160,120 130,150 Z M120,150 C100,130 70,120 40,140 C70,140 100,140 115,155 Z M120,150 C150,130 180,130 220,150 C180,150 150,150 125,160 Z M120,150 L140,300 L100,300 Z"/><path fill="%230D0221" d="M800,300 L820,120 C830,80 850,50 890,40 C850,70 830,100 820,120 Z M820,120 C810,80 780,40 740,30 C770,60 790,90 810,120 Z M820,120 C840,80 880,40 920,30 C880,60 850,90 830,120 Z M820,120 C800,100 760,90 720,110 C760,110 790,110 815,125 Z M820,120 C850,100 890,100 930,120 C890,120 850,120 825,130 Z M820,120 L840,300 L800,300 Z"/></svg>');
+            background-size: cover; background-position: bottom; background-repeat: no-repeat;
+        }
+
+        /* Efek Glow Tombol */
+        .btn-glow { transition: all 0.2s ease; }
+        .btn-glow:hover { box-shadow: 0 0 15px rgba(5, 217, 232, 0.4); transform: translateY(-1px); }
+        
+        /* Scrollbar Custom */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 42, 109, 0.5); border-radius: 999px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-purple-950 to-black text-slate-100 h-screen overflow-hidden flex transition-colors duration-300">
+<body class="text-slate-100 h-screen overflow-hidden flex">
 
-    <!-- Mobile Overlay -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-20 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+    <!-- Background -->
+    <div class="gta-bg">
+        <div class="stars"></div>
+        <div class="sun"></div>
+        <div class="palm-trees"></div>
+    </div>
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-30 w-72 bg-black/40 backdrop-blur-xl border-r border-gta-cyan/30 text-slate-300 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-[0_0_20px_rgba(0,240,255,0.1)]">
-        <div class="flex flex-col h-full overflow-hidden">
-            <div class="p-4 flex items-center justify-between border-b border-gta-cyan/20">
+    <!-- OVERLAY GELAP (Kalau sidebar kebuka, background jadi gelap) -->
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-20 hidden transition-opacity"></div>
+
+    <!-- SIDEBAR (Bisa disembunyikan) -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-30 w-72 bg-[#0D0221]/95 border-r border-gta-cyan/20 text-slate-300 flex flex-col justify-between transform transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0">
+        <div class="flex flex-col h-full">
+            
+            <!-- Header Sidebar -->
+            <div class="p-6 flex items-center justify-between border-b border-white/5">
                 <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-gta-pink to-gta-cyan flex items-center justify-center text-white font-bold shadow-[0_0_15px_rgba(255,0,127,0.5)]">
-                        <i class="fa-solid fa-gamepad text-sm"></i>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-gta-pink to-gta-cyan flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,42,109,0.6)]">
+                        <i class="fa-solid fa-car-side text-lg"></i>
                     </div>
-                    <span class="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-gta-pink to-gta-cyan tracking-wider">ViceAI</span>
+                    <div>
+                        <h1 class="font-extrabold text-xl text-transparent bg-clip-text bg-gradient-to-r from-gta-pink to-gta-cyan tracking-wider uppercase">Nexus AI</h1>
+                        <p class="text-[10px] text-gta-cyan font-bold tracking-widest uppercase">Vice City</p>
+                    </div>
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1 rounded-lg">
+                <!-- Tombol X (Tutup Sidebar) -->
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-2">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
 
-            <div class="p-3">
-                <button onclick="createNewChat()" class="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-gta-pink hover:bg-gta-purple text-white font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(255,0,127,0.5)] active:scale-[0.98]">
-                    <i class="fa-solid fa-plus text-sm"></i>
-                    <span>Chat Baru</span>
+            <!-- Tombol New Session -->
+            <div class="p-4">
+                <button onclick="createNewChat()" class="btn-glow w-full flex items-center justify-center space-x-2 py-3.5 px-4 bg-gradient-to-r from-gta-pink to-gta-purple text-white text-sm font-bold rounded-full uppercase tracking-wider shadow-lg">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>New Session</span>
                 </button>
             </div>
 
-            <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gta-cyan">
-                Riwayat Misi
+            <!-- Riwayat -->
+            <div class="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                Vice City Archives
             </div>
-
-            <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 space-y-1 py-1"></div>
+            <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 space-y-1 py-2"></div>
         </div>
 
-        <div class="p-3 border-t border-gta-cyan/20 space-y-2">
-            <button onclick="toggleTheme()" class="w-full flex items-center justify-between py-2 px-3 hover:bg-white/5 rounded-xl transition-colors text-sm text-slate-300">
+        <!-- Profil Bawah -->
+        <div class="p-4 border-t border-white/5">
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-gta-purple/30">
                 <div class="flex items-center space-x-3">
-                    <i id="themeIcon" class="fa-solid fa-moon w-5 text-center text-gta-cyan"></i>
-                    <span id="themeText">Mode Gelap</span>
-                </div>
-                <div class="w-8 h-4 bg-slate-700 rounded-full relative p-0.5 transition-colors" id="themeSwitchTrack">
-                    <div id="themeSwitchThumb" class="w-3 h-3 bg-white rounded-full transition-transform transform translate-x-0"></div>
-                </div>
-            </button>
-
-            <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-white/5 border border-gta-purple/30">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-full bg-gta-purple flex items-center justify-center text-white font-bold text-sm shadow-[0_0_10px_rgba(138,43,226,0.5)]">
-                        EV
+                    <div class="w-9 h-9 rounded-full bg-gta-purple flex items-center justify-center text-white shadow-[0_0_10px_rgba(119,0,255,0.5)]">
+                        <i class="fa-solid fa-money-bill-wave text-sm"></i>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-bold text-white">Evan Vice</span>
-                        <span class="text-[10px] text-gta-cyan font-semibold">Kingpin Status</span>
+                    <div>
+                        <p class="text-sm font-bold text-white">Evan Vice</p>
+                        <p class="text-[10px] text-gta-cyan font-semibold uppercase tracking-wider">Kingpin</p>
                     </div>
                 </div>
-                <button onclick="clearAllData()" title="Hapus Semua Riwayat" class="text-slate-500 hover:text-gta-pink p-1.5 rounded-lg transition-colors">
-                    <i class="fa-solid fa-trash-can text-xs"></i>
+                <button onclick="clearAllData()" title="Clear All Data" class="text-slate-500 hover:text-gta-pink transition-colors">
+                    <i class="fa-solid fa-trash-can text-sm"></i>
                 </button>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN CHAT AREA -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-transparent">
-        <header class="h-14 border-b border-gta-cyan/20 flex items-center justify-between px-4 z-10 bg-black/20 backdrop-blur-md">
-            <div class="flex items-center space-x-3">
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-300 hover:text-white p-2 rounded-lg">
-                    <i class="fa-solid fa-bars text-lg"></i>
+    <!-- MAIN AREA -->
+    <main class="flex-1 flex flex-col relative z-10">
+        
+        <!-- HEADER -->
+        <header class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#0D0221]/60 backdrop-blur-md">
+            <div class="flex items-center space-x-4">
+                <!-- TOMBOL BURGER (☰) -->
+                <button onclick="toggleSidebar()" class="text-slate-300 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-all">
+                    <i class="fa-solid fa-bars text-xl"></i>
                 </button>
+                
                 <div class="flex items-center space-x-2">
-                    <span id="currentChatTitle" class="font-bold text-sm sm:text-base text-white truncate max-w-[200px] sm:max-w-xs tracking-wide">Percakapan Baru</span>
-                    <span class="bg-gta-cyan/20 text-gta-cyan border border-gta-cyan text-[10px] px-2 py-0.5 rounded-full font-bold tracking-wider uppercase shadow-[0_0_10px_rgba(0,240,255,0.4)]">Groq x Vice City</span>
+                    <span id="currentChatTitle" class="font-bold text-lg text-white tracking-wide truncate max-w-[200px]">Active Mission</span>
+                    <span class="bg-gta-cyan/10 text-gta-cyan border border-gta-cyan/50 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest hidden sm:inline-block">Groq Engine</span>
                 </div>
             </div>
-
-            <div class="flex items-center space-x-2">
-                <button onclick="exportChat()" title="Ekspor Percakapan" class="p-2 text-slate-400 hover:text-gta-cyan rounded-lg hover:bg-white/5 transition-colors">
-                    <i class="fa-solid fa-download text-sm"></i>
-                </button>
-                <div class="h-4 w-[1px] bg-gta-cyan/30"></div>
-                <div class="flex items-center space-x-1.5 text-xs text-slate-300 px-2 py-1 bg-black/40 border border-gta-cyan/20 rounded-lg">
-                    <span class="w-2 h-2 rounded-full bg-gta-pink animate-ping"></span>
-                    <span class="font-bold text-gta-cyan tracking-wider">ONLINE</span>
-                </div>
+            <div class="flex items-center space-x-3 text-xs bg-black/40 border border-gta-pink/30 px-4 py-2 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-gta-pink animate-ping"></span>
+                <span class="font-bold text-gta-pink uppercase tracking-widest hidden sm:inline-block">Connected</span>
             </div>
         </header>
 
-        <div id="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-            <div id="welcomeState" class="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-6 py-12">
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-gta-pink to-gta-cyan flex items-center justify-center text-white text-4xl shadow-[0_0_30px_rgba(255,0,127,0.6)] animate-glow">
-                    <i class="fa-solid fa-robot"></i>
+        <!-- CHAT AREA -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto p-6 flex flex-col relative">
+            
+            <!-- WELCOME SCREEN -->
+            <div id="welcomeState" class="flex-1 flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-8">
+                <div class="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-tr from-gta-pink to-gta-cyan flex items-center justify-center text-white text-5xl shadow-[0_0_30px_rgba(255,42,109,0.5)]">
+                    <i class="fa-solid fa-car-side"></i>
                 </div>
-                <div class="space-y-2">
-                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gta-pink to-gta-cyan">Welcome to Vice City, Evan.</h1>
-                    <p class="text-sm text-slate-400 font-medium">Siap untuk misi hari ini? Tanyakan apa saja ke NexusAI.</p>
+                <div>
+                    <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gta-pink to-gta-cyan tracking-tight mb-2">Welcome to Vice City.</h1>
+                    <p class="text-slate-300 font-light text-lg">The city is yours, Evan. What's the plan?</p>
                 </div>
             </div>
 
-            <div id="messageFeed" class="space-y-6 max-w-3xl mx-auto w-full hidden"></div>
+            <!-- MESSAGE FEED -->
+            <div id="messageFeed" class="space-y-6 max-w-4xl mx-auto w-full hidden pb-6"></div>
         </div>
 
-        <div class="p-4 bg-black/40 backdrop-blur-md border-t border-gta-cyan/20">
-            <div class="max-w-3xl mx-auto">
+        <!-- INPUT AREA -->
+        <div class="p-6 bg-[#0D0221]/80 border-t border-gta-cyan/20">
+            <div class="max-w-4xl mx-auto relative">
                 <form id="chatForm" onsubmit="handleChatSubmit(event)" class="relative flex items-center">
-                    <textarea 
-                        id="userInput" 
-                        rows="1" 
-                        placeholder="Ketik pesan ke ViceAI..." 
-                        class="w-full pl-4 pr-12 py-3.5 bg-black/50 border border-gta-purple/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gta-cyan focus:border-transparent text-sm resize-none max-h-32 text-white placeholder-slate-500 shadow-[inset_0_0_10px_rgba(138,43,226,0.2)]"
-                        onkeydown="handleKeyDown(event)"
-                        oninput="autoResize(this)"
-                    ></textarea>
-                    
-                    <button 
-                        type="submit" 
-                        id="sendButton"
-                        class="absolute right-2.5 bottom-2.5 w-9 h-9 bg-gta-cyan hover:bg-gta-pink text-black font-bold rounded-xl flex items-center justify-center transition-all shadow-[0_0_15px_rgba(0,240,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    <input 
+                        id="userInput"
+                        type="text" 
+                        placeholder="Transmit message..." 
+                        autocomplete="off"
+                        class="w-full pl-6 pr-16 py-4 bg-black/40 border border-gta-purple/50 rounded-full focus:outline-none focus:ring-2 focus:ring-gta-cyan text-sm text-white placeholder-slate-500 shadow-[inset_0_0_10px_rgba(119,0,255,0.1)]"
                     >
-                        <i class="fa-solid fa-arrow-up text-sm"></i>
+                    <button 
+                        type="submit"
+                        id="sendButton" 
+                        class="btn-glow absolute right-2 w-12 h-12 bg-gradient-to-r from-gta-cyan to-gta-pink text-black font-bold rounded-full flex items-center justify-center shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <i class="fa-solid fa-paper-plane text-lg"></i>
                     </button>
                 </form>
-                <div class="text-center mt-3">
-                    <span class="text-[11px] text-slate-500 font-medium tracking-wide">NexusAI terhubung langsung dengan Groq API x Vice City Vibes.</span>
+                <div class="text-center mt-4">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Powered by NexusAI &bull; Vice City Tech</span>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-black/80 backdrop-blur-md text-white px-4 py-3 rounded-xl shadow-[0_0_20px_rgba(0,240,255,0.3)] border border-gta-cyan flex items-center space-x-3 text-sm">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-gta-cyan"></i>
-        <span id="toastMessage">Pesan berhasil disalin!</span>
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-[#0D0221] text-white px-6 py-4 rounded-xl shadow-[0_0_20px_rgba(5,217,232,0.3)] border border-gta-cyan flex items-center space-x-3 text-sm font-bold">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-gta-cyan text-lg"></i>
+        <span id="toastMessage">Success!</span>
     </div>
 
+    <!-- CONFIG API -->
     <script src="config.js"></script>
     
-    <!-- JavaScript Logic -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         let chats = JSON.parse(localStorage.getItem('nexus_chats')) || [];
         let currentChatId = localStorage.getItem('nexus_current_chat_id') || null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Paksa dark mode terus-terusan untuk nuansa GTA
-            document.documentElement.classList.add('dark');
-            updateThemeUI(true);
-            
             if (chats.length === 0) {
                 createNewChat();
             } else {
@@ -201,41 +227,27 @@
             renderChatHistory();
         });
 
-        function toggleTheme() {
-            showToast('Mode GTA Vice City tidak bisa diganti! 🌴', 'fa-solid fa-triangle-exclamation text-gta-pink');
-        }
-
-        function updateThemeUI(isDark) {
-            // UI Theme dibiarkan dark
-            const icon = document.getElementById('themeIcon');
-            const text = document.getElementById('themeText');
-            icon.className = 'fa-solid fa-sun w-5 text-center text-gta-cyan';
-            text.textContent = 'Vice City Mode';
-        }
-
+        // === FUNGSI TOGGLE SIDEBAR YANG SUDAH DIPERBAIKI ===
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-        }
-
-        function handleKeyDown(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                document.getElementById('chatForm').requestSubmit();
+            
+            // Kalau sidebar lagi ngumpet, buka!
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden'); // Munculin lapisan gelap
+            } 
+            // Kalau sidebar lagi kebuka, tutup!
+            else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden'); // ILANGIN LAPISAN GELAPNYA
             }
         }
 
         function createNewChat() {
             const newChat = {
                 id: 'chat_' + Date.now(),
-                title: 'Misi Baru',
+                title: 'New Mission',
                 messages: []
             };
             chats.unshift(newChat);
@@ -243,9 +255,7 @@
             saveChats();
             loadChat(currentChatId);
             renderChatHistory();
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
+            if (window.innerWidth < 768) toggleSidebar();
         }
 
         function loadChat(chatId) {
@@ -268,20 +278,20 @@
             listContainer.innerHTML = '';
 
             if (chats.length === 0) {
-                listContainer.innerHTML = `<div class="p-3 text-xs text-slate-500 text-center">Belum ada riwayat misi.</div>`;
+                listContainer.innerHTML = `<div class="p-3 text-xs text-slate-500 text-center uppercase tracking-widest">No archives found</div>`;
                 return;
             }
 
             chats.forEach(chat => {
                 const isActive = chat.id === currentChatId;
                 const item = document.createElement('div');
-                item.className = `group flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-all ${isActive ? 'bg-gta-purple/30 border border-gta-purple text-white font-medium shadow-[0_0_10px_rgba(138,43,226,0.3)]' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 border border-transparent'}`;
+                item.className = `group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer text-sm transition-all ${isActive ? 'bg-white/10 border border-gta-cyan/30 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent'}`;
                 item.onclick = () => loadChat(chat.id);
                 
                 item.innerHTML = `
-                    <div class="flex items-center space-x-2.5 overflow-hidden flex-1 mr-2">
-                        <i class="fa-solid fa-location-dot text-xs ${isActive ? 'text-gta-cyan' : 'text-slate-500'}"></i>
-                        <span class="truncate text-xs">${escapeHTML(chat.title)}</span>
+                    <div class="flex items-center space-x-3 overflow-hidden flex-1 mr-2">
+                        <i class="fa-solid fa-location-dot text-xs ${isActive ? 'text-gta-cyan' : 'text-slate-600'}"></i>
+                        <span class="truncate font-medium">${escapeHTML(chat.title)}</span>
                     </div>
                     <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-gta-pink p-1 rounded transition-opacity">
                         <i class="fa-solid fa-trash-can text-xs"></i>
@@ -294,23 +304,19 @@
         function deleteChat(chatId) {
             chats = chats.filter(c => c.id !== chatId);
             saveChats();
-            if (chats.length === 0) {
-                createNewChat();
-            } else if (currentChatId === chatId) {
-                loadChat(chats[0].id);
-            } else {
-                renderChatHistory();
-            }
-            showToast('Misi dihapus', 'fa-solid fa-trash text-gta-pink');
+            if (chats.length === 0) createNewChat();
+            else if (currentChatId === chatId) loadChat(chats[0].id);
+            else renderChatHistory();
+            showToast('Mission wiped from archives', 'fa-solid fa-trash text-gta-pink');
         }
 
         function clearAllData() {
-            if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat misi?')) {
+            if (confirm('Wipe all Vice City archives? This cannot be undone.')) {
                 chats = [];
                 localStorage.removeItem('nexus_chats');
                 localStorage.removeItem('nexus_current_chat_id');
                 createNewChat();
-                showToast('Semua riwayat berhasil dibersihkan', 'fa-solid fa-triangle-exclamation text-gta-pink');
+                showToast('All archives wiped', 'fa-solid fa-triangle-exclamation text-gta-pink');
             }
         }
 
@@ -335,12 +341,12 @@
                 msgDiv.className = `flex items-start space-x-3 sm:space-x-4 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
                 
                 msgDiv.innerHTML = `
-                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${isUser ? 'bg-gta-pink shadow-[0_0_10px_rgba(255,0,127,0.6)]' : 'bg-gradient-to-tr from-gta-cyan to-gta-purple shadow-[0_0_10px_rgba(0,240,255,0.6)]'}">
-                        ${isUser ? 'EV' : '<i class="fa-solid fa-robot"></i>'}
+                    <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-bold ${isUser ? 'bg-gta-pink shadow-[0_0_10px_rgba(255,42,109,0.6)]' : 'bg-gradient-to-tr from-gta-cyan to-gta-purple'}">
+                        ${isUser ? '<i class="fa-solid fa-money-bill-wave"></i>' : '<i class="fa-solid fa-car-side"></i>'}
                     </div>
-                    <div class="flex-1 space-y-1 overflow-hidden ${isUser ? 'text-right' : 'text-left'}">
-                        <div class="text-xs font-semibold text-slate-400">${isUser ? 'Anda' : 'ViceAI'}</div>
-                        <div class="inline-block p-4 rounded-2xl text-sm leading-relaxed max-w-full text-left ${isUser ? 'bg-gradient-to-r from-gta-pink to-purple-600 text-white rounded-tr-none shadow-[0_0_15px_rgba(255,0,127,0.3)]' : 'bg-black/60 backdrop-blur-md border border-gta-cyan/30 text-slate-200 rounded-tl-none shadow-[0_0_15px_rgba(0,240,255,0.1)]'}">
+                    <div class="flex-1 space-y-1.5 overflow-hidden ${isUser ? 'text-right' : 'text-left'}">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${isUser ? 'Evan Vice' : 'NexusAI'}</div>
+                        <div class="inline-block p-4 rounded-2xl text-sm leading-relaxed max-w-full text-left ${isUser ? 'bg-gradient-to-r from-gta-pink to-gta-purple text-white rounded-tr-none' : 'bg-[#0D0221]/90 border border-gta-cyan/30 text-slate-200 rounded-tl-none'}">
                             <div class="whitespace-pre-wrap break-words">${escapeHTML(msg.content)}</div>
                         </div>
                     </div>
@@ -363,12 +369,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendPrompt(text) {
-            document.getElementById('userInput').value = text;
-            document.getElementById('chatForm').requestSubmit();
-        }
-
-        // Integrasi Groq API
         async function handleChatSubmit(event) {
             event.preventDefault();
             const input = document.getElementById('userInput');
@@ -376,13 +376,12 @@
             if (!prompt) return;
 
             input.value = '';
-            input.style.height = 'auto';
 
             const chat = chats.find(c => c.id === currentChatId);
             if (!chat) return;
 
             if (chat.messages.length === 0) {
-                chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
+                chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
             }
 
             chat.messages.push({ role: 'user', content: prompt });
@@ -393,7 +392,7 @@
             const sendBtn = document.getElementById('sendButton');
             sendBtn.disabled = true;
 
-            chat.messages.push({ role: 'assistant', content: 'Sedang berpikir...' });
+            chat.messages.push({ role: 'assistant', content: 'NexusAI is analyzing...' });
             saveChats();
             renderMessages(chat.messages);
 
@@ -408,47 +407,30 @@
                     },
                     body: JSON.stringify({
                         model: "openai/gpt-oss-120b",
-                        messages: chat.messages.filter(m => m.content !== 'Sedang berpikir...')
+                        messages: chat.messages.filter(m => m.content !== 'NexusAI is analyzing...')
                     })
                 });
 
                 const data = await response.json();
                 
                 if (data.choices && data.choices[0].message.content) {
-                    const aiResponseText = data.choices[0].message.content;
-                    chat.messages[chat.messages.length - 1].content = aiResponseText;
+                    chat.messages[chat.messages.length - 1].content = data.choices[0].message.content;
                 } else {
                     console.error("Error dari Groq:", data);
-                    chat.messages[chat.messages.length - 1].content = "Gagal memproses respons. Cek Console (F12) untuk detail.";
+                    chat.messages[chat.messages.length - 1].content = "System error. Check connection.";
                 }
 
                 saveChats();
                 renderMessages(chat.messages);
 
             } catch (error) {
-                chat.messages[chat.messages.length - 1].content = "Gagal terhubung ke server AI. Periksa koneksi internet.";
+                chat.messages[chat.messages.length - 1].content = "Connection to Vice City servers lost. Retry.";
                 saveChats();
                 renderMessages(chat.messages);
                 console.error(error);
             } finally {
                 sendBtn.disabled = false;
             }
-        }
-
-        function exportChat() {
-            const chat = chats.find(c => c.id === currentChatId);
-            if (!chat || chat.messages.length === 0) {
-                showToast('Tidak ada pesan untuk diekspor', 'fa-solid fa-triangle-exclamation text-gta-pink');
-                return;
-            }
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(chat, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('Misi berhasil diekspor!', 'fa-solid fa-circle-check text-gta-cyan');
         }
 
         function showToast(message, iconClass = 'fa-solid fa-circle-check text-gta-cyan') {
