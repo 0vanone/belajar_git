@@ -1,0 +1,1 @@
+ const GROQ_API_KEY = "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";
